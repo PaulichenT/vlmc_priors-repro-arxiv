@@ -1,6 +1,6 @@
 # vlmc_priors-repro-arxiv
 
-Simulation results associated with the paper [arXiv:2603.25806](https://arxiv.org/abs/2603.25806)
+Simulation results associated with the preprint [Context Tree Prior distributions based on node weighting with exact Bayes factors](https://arxiv.org/abs/2603.25806)
 
 ---
 
