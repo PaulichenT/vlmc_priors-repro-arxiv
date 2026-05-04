@@ -55,7 +55,7 @@ generate_samples <- function(sample_sizes, true_contexts, true_probs) {
 #'
 #' @param sample A character vector representing the observed sequence.
 #' @param f A context-tree function (prior weights).
-#' @param true_contexts A vector or list specifying the contexts of the true tree.
+#' @param true_contexts A vector specifying the contexts of the true tree.
 #'
 #' @returns
 #' A list containing:
@@ -142,7 +142,7 @@ fit_priors_on_sample <- function(sample, priors, true_contexts) {
 #' @param sample_list A list of samples generated from `generate_samples` function.
 #' @param sample_sizes A numeric vector of sample sizes (must match `sample_list`).
 #' @param priors A list of context-tree functions.
-#' @param true_contexts The contexts of the true model.
+#' @param true_contexts A vector specifying the contexts of the true tree.
 #'
 #' @returns A data frame with one row per (sample size, prior), containing the evaluation
 #' metrics for each fitted model.
