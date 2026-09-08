@@ -47,14 +47,14 @@ generate_samples <- function(sample_sizes, true_contexts, true_probs) {
 #' Fits the Bayesian context tree model to a sample and computes evaluation metrics.
 #'
 #' @details
-#' Given a sample, a context-tree function `f`, and the true contexts, the model is
+#' Given a sample, a weight function `w`, and the true contexts, the model is
 #' fitted using the bacontrees package. The function computes:
 #' - the distance between the true tree and the MAP tree;
 #' - the prior and posterior probabilities of the true tree; and
 #' - the log10 marginal likelihood of the model.
 #'
 #' @param sample A character vector representing the observed sequence.
-#' @param f A context-tree function (prior weights).
+#' @param w A weight function.
 #' @param true_contexts A vector specifying the contexts of the true tree.
 #'
 #' @returns
@@ -64,10 +64,10 @@ generate_samples <- function(sample_sizes, true_contexts, true_probs) {
 #' - `post_true_tree` posterior probability of the true tree;
 #' - `log_10_evidence` log10 marginal likelihood.
 #'
-fit_single_model <- function(sample, f, true_contexts) {
+fit_single_model <- function(sample, w, true_contexts) {
 
   # Fit Bayesian context tree model
-  bt <- baConTree$new(sample, 10, 0.5, f)
+  bt <- baConTree$new(sample, 10, 0.5, w)
 
   # Obtain the value of evidence
   evidence <- bt$getMarginalLikelihood(TRUE)
@@ -110,38 +110,38 @@ fit_single_model <- function(sample, f, true_contexts) {
 #' Bayesian context tree model.
 #'
 #' @details
-#' For each context-tree function in `priors`, the model is fitted to the provided
+#' For each weight function in `priors`, the model is fitted to the provided
 #' `sample` via `fit_single_model()`. The function returns, for each prior,
 #' the corresponding evaluation metrics.
 #'
 #' @param sample A character vector representing the observed sequence.
-#' @param priors A named list of prior (context-tree) functions.
+#' @param priors A named list of priors (weight functions).
 #' @param true_contexts A vector specifying the contexts of the true tree.
 #'
 #' @returns
-#' A list of results, one for each context-tree function in `priors`.
+#' A list of results, one for each weight function in `priors`.
 #' Each element is itself a list containing the output of `fit_single_model()`.
 #'
 fit_priors_on_sample <- function(sample, priors, true_contexts) {
 
-  lapply(priors, function(f) {
-    fit_single_model(sample = sample, f = f, true_contexts = true_contexts)
+  lapply(priors, function(w) {
+    fit_single_model(sample = sample, w = w, true_contexts = true_contexts)
   })
 }
 
 #' @description
 #' Executes the simulation study using a pre-generated list of samples and
-#' multiple context-tree functions, returning the results as a data frame.
+#' multiple weight functions, returning the results as a data frame.
 #'
 #' @details
 #' For each sample in `sample_list`, corresponding to different sample sizes,
-#' the Bayesian context tree model is fitted under each context-tree function
+#' the Bayesian context tree model is fitted under each weight function
 #' provided in `priors`. For every combination of sample size and prior,
 #' the function computes the evaluation metrics.
 #'
 #' @param sample_list A list of samples generated from `generate_samples` function.
 #' @param sample_sizes A numeric vector of sample sizes (must match `sample_list`).
-#' @param priors A list of context-tree functions.
+#' @param priors A list of weight functions.
 #' @param true_contexts A vector specifying the contexts of the true tree.
 #'
 #' @returns A data frame with one row per (sample size, prior), containing the evaluation
@@ -174,5 +174,4 @@ run_scenario_from_samples <- function(sample_list, sample_sizes, priors, true_co
     }
   )
 }
-
 
