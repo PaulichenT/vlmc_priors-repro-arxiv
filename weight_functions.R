@@ -1,9 +1,8 @@
 # ------------------------------------------------------------
-# Context-tree functions
+# Weight functions
 # ------------------------------------------------------------
-# This script implements the context-tree functions presented
-# in Table 1 of the paper. Each function is defined as a function
-# on nodes, f(s), corresponding to the third column of Table 1.
+# This script implements the weight functions presented
+# in Table 1 of the paper. 
 # ------------------------------------------------------------
 
 #' @description
@@ -11,15 +10,13 @@
 #'
 u <- function(node) {1}
 
+
 #' @description
-#' l-depth indicator function
-#' @param l depth of interest.
+#' beta-constant function
+#' @param beta a constant 
 #'
-d_l <- function(l) {
-  function(node) {
-    if (node$getDepth() <= l) 1 else 0
-  }
-}
+k_beta <- function(beta) {function(node) {beta}}
+
 
 #' @description
 #' a-renewal indicator function:
@@ -32,19 +29,29 @@ i_a <- function(a) {
     if (length(symbols) > 1 && any(symbols[-length(symbols)] == a)) {
       return(0)}
     else {return(1)}
-    }
+  }
 }
 
-#' @description
-#' Exponential function
-#' @param alpha a positive real number.
-#'
-e_alpha <- function(alpha) {function(node) {exp(-alpha)}}
 
 #' @description
-#' l(s)-exponential function
+#' l-m-depth indicator function
+#' @param l a depth (integer)
+#' @param m a depth (integer)
 #'
-e_ls <- function(node) {exp(-node$getDepth())}
+d_l_m <- function(l, m) {
+  function(node) {
+    if (node$getDepth() >= l && node$getDepth() <= m) 1 else 0
+  }
+}
+
+
+#' @description
+#' beta-exponential function
+#' @param beta a constant
+#'
+e_beta <- function(beta) {
+  function(node) {exp(beta * node$getDepth())}}
+
 
 #' @description
 #' CTW function
@@ -57,13 +64,14 @@ ctw <- function(maximalDepth) {
   }
 }
 
+
 #' @description
 #' BCT function
 #' @param beta Stopping probability of the nodes
 #' @param maximalDepth The maximal depth `L` considered in the model
 #' @param m Length of alphabet `A` considered.
 #'
-b_beta <- function(beta, maximalDepth, m) {
+bct_beta <- function(beta, maximalDepth, m) {
   function(node) {
     if (node$getDepth() < maximalDepth) {
       return((1 - beta)^(1 / (m - 1)) * beta)
@@ -71,14 +79,14 @@ b_beta <- function(beta, maximalDepth, m) {
   }
 }
 
+
 #' @description
-#' Target l-depth function
+#' beta-target l-depth function
 #' @param l Depth of interest
-#' @param k Concentration parameter
+#' @param beta Concentration parameter
 #'
-tcl <- function(l, k) {
+t_beta_l <- function(l, beta) {
   function(node) {
-    return(k^(-abs(node$getDepth() - l)))
+    return(beta^(-abs(node$getDepth() - l)))
   }
 }
-
